@@ -43,7 +43,7 @@ end
 
 get '/memo/*' do |id|
   @memo_id, @memo_title, @memo_text = get_memo(id)
-  erb @memo_id ? :memo : :not_found
+  erb @memo_id ? :memo : :notFound
 end
 
 get '/addition' do
@@ -52,7 +52,7 @@ end
 
 get '/editing/*' do |id|
   @memo_id, @memo_title, @memo_text = get_memo(id)
-  erb @memo_id ? :editing : :not_found
+  erb @memo_id ? :editing : :notFound
 end
 
 post '/memo' do
@@ -83,5 +83,5 @@ end
 
 not_found do
   status 404
-  erb :not_found
+  erb :notFound
 end
