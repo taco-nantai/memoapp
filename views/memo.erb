@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <link rel="stylesheet" href="/style.css">
+  <meta charset="utf-8">
+  <title><%= h @title %></title>
+</head>
+<body>
+  <h1><a class="top" href="/">memo app</a></h1>
+  <div class="main">
+  <h2 class="page_title">メモ詳細</h2>
+      <p><b class="memo_title"><%= h @memo_title %></b></p>
+      <p><%= (h @memo_text).gsub(/\r\n|\r/,"<br>") %></p>
+    <div class="button_div">
+    <form method="get" action="/editing/<%= h @memo_id %>">
+      <input class="button" type="submit" value="編集">
+    </form>
+    <form method="post" action="/memo/<%= h @memo_id %>">
+      <input type="hidden" name="_method" value="DELETE">
+      <input class="button" type="submit" value="削除">
+    </form>
+    </div>
+  </div>
+</body>
+</html>

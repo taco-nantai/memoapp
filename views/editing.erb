@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <link rel="stylesheet" href="/style.css">
+  <meta charset="utf-8">
+  <title>編集</title>
+</head>
+<body>
+  <h1><a class="top" href="/">memo app</a></h1>
+  <div class="main">
+  <h2 class="page_title">編集</h2>
+    <form action="/memo/<%= h @memo_id %>" method="POST">
+      <h3>タイトル</h3>
+      <input type="text" id="title" name="title" value="<%= h @memo_title %>">
+      <h3>内容</h3>
+      <textarea id="text" name="text"><%= h @memo_text %></textarea>
+      <input type="hidden" name="_method" value="PATCH">
+      <input class="button" type="submit" value="保存">
+    </form>
+  </div>
+</body>
+</html>

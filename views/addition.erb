@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <link rel="stylesheet" href="/style.css">
+  <meta charset="utf-8">
+  <title>新規作成</title>
+</head>
+<body>
+  <h1><a class="top" href="/">memo app</a></h1>
+  <div class="main">
+  <h2 class="page_title">新規作成</h2>
+    <form action="/memo" method="POST">
+      <h3>タイトル</h3>
+      <input type="text" id="title" name="title">
+      <h3>内容</h3>
+      <textarea id="text" name="text"></textarea>
+      <input class="button" type="submit" value="保存">
+    </form>
+  </div>
+</body>
+</html>

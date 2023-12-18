@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <link rel="stylesheet" href="/style.css">
+  <meta charset="utf-8">
+  <title>メモ一覧</title>
+</head>
+<body>
+  <h1><a class="top" href="/">memo app</a></h1>
+  <div class="main">
+  <h2 class="page_title">メモ一覧</h2>
+    <ul>
+      <% CSV.foreach("memos.csv") do |memo| %>
+      <li><a href="/memo/<%= h memo[0] %>"><%= h memo[1] %></a></li>
+      <% end %>
+    </ul>
+    <input class="button" type="button" onclick="location.href='/addition'" value="新規作成">
+  </div>
+</body>
+</html>
