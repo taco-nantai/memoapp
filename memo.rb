@@ -39,6 +39,7 @@ end
 
 get '/' do
   @title = 'メモ一覧'
+  @memos = CSV.read('memos.csv')
   erb :index
 end
 

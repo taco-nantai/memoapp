@@ -1,5 +1,5 @@
 <ul>
-  <% CSV.foreach("memos.csv") do |memo| %>
+  <% @memos.each do |memo| %>
   <li><a href="/memo/<%= h memo[0] %>"><%= h memo[1] %></a></li>
   <% end %>
 </ul>
