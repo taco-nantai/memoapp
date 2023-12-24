@@ -64,7 +64,7 @@ get '/editing/*' do |id|
 end
 
 post '/memo' do
-  memo = { id: SecureRandom.uuid, title: params[:title], text: params[:text]}
+  memo = { id: SecureRandom.uuid, title: params[:title], text: params[:text] }
   write_memo([memo[:id], memo[:title], memo[:text]])
   redirect "/memo/#{memo[:id]}"
 end
