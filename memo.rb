@@ -16,11 +16,11 @@ helpers do
   end
 end
 
-def read_csv
+def read_memos
   CSV.read(MEMOS_CSV)
 end
 
-def write_csv(memo)
+def write_memo(memo)
   CSV.open(MEMOS_CSV, 'a') { |memos| memos << memo }
 end
 
@@ -42,7 +42,7 @@ end
 
 get '/' do
   @title = 'メモ一覧'
-  @memos = read_csv
+  @memos = read_memos
   erb :index
 end
 
@@ -65,12 +65,12 @@ end
 
 post '/memo' do
   memo = { id: SecureRandom.uuid, title: params[:title], text: params[:text]}
-  write_csv([memo[:id], memo[:title], memo[:text]])
+  write_memo([memo[:id], memo[:title], memo[:text]])
   redirect "/memo/#{memo[:id]}"
 end
 
 patch '/memo/*' do |id|
-  edited_memos = read_csv
+  edited_memos = read_memos
   edited_memos.each.with_index do |memo, index|
     if memo[0] == id
       edited_memos[index] = [id, params[:title], params[:text]]
@@ -82,7 +82,7 @@ patch '/memo/*' do |id|
 end
 
 delete '/memo/*' do |id|
-  edited_memos = read_csv.reject { |memo| memo[0] == id }
+  edited_memos = read_memos.reject { |memo| memo[0] == id }
   replace_memos(edited_memos)
   redirect '/'
 end
