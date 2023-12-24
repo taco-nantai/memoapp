@@ -3,9 +3,10 @@
 
 # myapp.rb
 
+require 'csv'
+require 'securerandom'
 require 'sinatra'
 require 'sinatra/reloader'
-require 'csv'
 
 MEMOS_CSV = 'memos.csv'
 
@@ -21,15 +22,6 @@ def get_memo(id)
     memo_infomation = memo if memo[0] == id
   end
   memo_infomation
-end
-
-def maximum_memo_id
-  max_memo_id = 0
-  CSV.foreach(MEMOS_CSV) do |memo|
-    memo_id = memo[0].to_i
-    max_memo_id = memo_id if max_memo_id < memo_id
-  end
-  max_memo_id
 end
 
 def replace_memos(edited_memos)
@@ -63,7 +55,7 @@ get '/editing/*' do |id|
 end
 
 post '/memo' do
-  memo_id = maximum_memo_id + 1
+  memo_id = SecureRandom.uuid
   memo_title = params[:title]
   memo_content = params[:text]
   CSV.open(MEMOS_CSV, 'a') { |memos| memos << [memo_id, memo_title, memo_content] }
