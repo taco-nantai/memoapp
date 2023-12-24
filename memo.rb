@@ -38,6 +38,7 @@ def replace_memos(edited_memos)
 end
 
 get '/' do
+  @title = 'メモ一覧'
   erb :index
 end
 
@@ -47,6 +48,7 @@ get '/memo/*' do |id|
 end
 
 get '/addition' do
+  @title = '新規作成'
   erb :addition
 end
 
