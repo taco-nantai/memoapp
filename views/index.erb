@@ -1,6 +1,6 @@
 <ul>
   <% @memos.each do |memo| %>
-  <li><a href="/memo/<%= h memo[0] %>"><%= h memo[1] %></a></li>
+  <li><a href="/memo/<%= memo[0] %>"><%= h memo[1] %></a></li>
   <% end %>
 </ul>
 <input class="button" type="button" onclick="location.href='/addition'" value="新規作成">
