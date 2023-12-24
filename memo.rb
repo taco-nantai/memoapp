@@ -54,8 +54,9 @@ get '/addition' do
 end
 
 get '/editing/*' do |id|
-  @memo_id, @memo_title, @memo_text = get_memo(id)
-  erb @memo_id ? :editing : :notFound
+  @memo = {}
+  @memo[:id], @memo[:title], @memo[:text] = get_memo(id)
+  erb @memo[:id] ? :editing : :notFound
 end
 
 post '/memo' do
