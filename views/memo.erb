@@ -1,5 +1,5 @@
 <p><b class="memo_title"><%= h @memo_title %></b></p>
-<p><%= (h @memo_text).gsub(/\r\n|\r/,"<br>") %></p>
+<p><%= h(@memo_text).gsub(/\R/, "<br>") %></p>
 <div class="button_div">
   <form method="get" action="/editing/<%= h @memo_id %>">
     <input class="button" type="submit" value="編集">
