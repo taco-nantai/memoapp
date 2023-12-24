@@ -21,15 +21,15 @@ def read_csv
 end
 
 def write_csv(memo)
-  CSV.open(MEMOS_CSV, 'a') { |memos| memos << [memo] }
+  CSV.open(MEMOS_CSV, 'a') { |memos| memos << memo }
 end
 
 def get_memo(id)
-  memo_infomation = []
+  memo_values = []
   CSV.foreach(MEMOS_CSV) do |memo|
-    memo_infomation = memo if memo[0] == id
+    memo_values = memo if memo[0] == id
   end
-  memo_infomation
+  memo_values
 end
 
 def replace_memos(edited_memos)
@@ -47,8 +47,9 @@ get '/' do
 end
 
 get '/memo/*' do |id|
-  @memo_id, @memo_title, @memo_text = get_memo(id)
-  erb @memo_id ? :memo : :notFound
+  @memo = {}
+  @memo[:id], @memo[:title], @memo[:text] = get_memo(id)
+  erb @memo[:id] ? :memo : :notFound
 end
 
 get '/addition' do
@@ -63,14 +64,18 @@ get '/editing/*' do |id|
 end
 
 post '/memo' do
-  memo_id = SecureRandom.uuid
-  memo_title = params[:title]
-  memo_content = params[:text]
-  write_csv([memo_id, memo_title, memo_content])
-  redirect "/memo/#{memo_id}"
+  memo = { id: SecureRandom.uuid, title: params[:title], text: params[:text]}
+  p '*************************************************************************************************'
+  p memo[:id]
+  p '*************************************************************************************************'
+  write_csv([memo[:id], memo[:title], memo[:text]])
+  redirect "/memo/#{memo[:id]}"
 end
 
 patch '/memo/*' do |id|
+  p '*************************************************************************************************'
+  p id
+  p '*************************************************************************************************'
   edited_memos = read_csv
   edited_memos.each.with_index do |memo, index|
     if memo[0] == id
