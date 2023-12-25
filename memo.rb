@@ -16,27 +16,23 @@ helpers do
   end
 end
 
-def read_memos
-  CSV.read(MEMOS_CSV)
-end
-
-def write_memo(memo)
-  CSV.open(MEMOS_CSV, 'a') { |memos| memos << memo }
-end
-
 def get_memo(id)
-  memo_values = []
-  CSV.foreach(MEMOS_CSV) do |memo|
-    memo_values = memo if memo[0] == id
-  end
-  memo_values
+  read_memos.each { |memo| return memo if memo['id'] == id }
+  nil
 end
 
-def replace_memos(edited_memos)
+def read_memos
+  CSV.read(MEMOS_CSV, headers: true)
+end
+
+def add_memo(memo)
+  CSV.open(MEMOS_CSV, 'a') { |memos| memos << [memo['id'], memo['title'], memo['text']] }
+end
+
+def write_memos(edited_memos)
   CSV.open(MEMOS_CSV, 'w') do |memos|
-    edited_memos.each do |edited_memo|
-      memos << edited_memo
-    end
+    memos << %w[id title text]
+    edited_memos.each { |edited_memo| memos << [edited_memo['id'], edited_memo['title'], edited_memo['text']] }
   end
 end
 
@@ -47,9 +43,9 @@ get '/' do
 end
 
 get '/memo/*' do |id|
-  @memo = {}
-  @memo[:id], @memo[:title], @memo[:text] = get_memo(id)
-  erb @memo[:id] ? :memo : :notFound
+  @title = 'メモ'
+  @memo = get_memo(id)
+  erb @memo ? :memo : :notFound
 end
 
 get '/addition' do
@@ -58,32 +54,26 @@ get '/addition' do
 end
 
 get '/editing/*' do |id|
-  @memo = {}
-  @memo[:id], @memo[:title], @memo[:text] = get_memo(id)
-  erb @memo[:id] ? :editing : :notFound
+  @title = '編集'
+  @memo = get_memo(id)
+  erb @memo ? :editing : :notFound
 end
 
 post '/memo' do
-  memo = { id: SecureRandom.uuid, title: params[:title], text: params[:text] }
-  write_memo([memo[:id], memo[:title], memo[:text]])
-  redirect "/memo/#{memo[:id]}"
+  memo = { 'id' => SecureRandom.uuid, 'title' => params[:title], 'text' => params[:text] }
+  add_memo(memo)
+  redirect "/memo/#{memo['id']}"
 end
 
 patch '/memo/*' do |id|
-  edited_memos = read_memos
-  edited_memos.each.with_index do |memo, index|
-    if memo[0] == id
-      edited_memos[index] = [id, params[:title], params[:text]]
-      break
-    end
-  end
-  replace_memos(edited_memos)
+  edited_memos = read_memos.map { |memo| memo['id'] == id ? { 'id' => id, 'title' => params[:title], 'text' => params[:text] } : memo }
+  write_memos(edited_memos)
   redirect "/memo/#{id}"
 end
 
 delete '/memo/*' do |id|
-  edited_memos = read_memos.reject { |memo| memo[0] == id }
-  replace_memos(edited_memos)
+  edited_memos = read_memos.reject { |memo| memo['id'] == id }
+  write_memos(edited_memos)
   redirect '/'
 end
 

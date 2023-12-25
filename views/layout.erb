@@ -3,12 +3,12 @@
 <head>
   <link rel="stylesheet" href="/style.css">
   <meta charset="utf-8">
-  <title><%= @memo_title || @title %></title>
+  <title><%= @title %></title>
 </head>
 <body>
   <h1><a class="top" href="/">memo app</a></h1>
   <div class="main">
-  <h2 class="page_title"><%= @memo_title || @title %></h2>
+  <h2 class="page_title"><%= @title %></h2>
     <%= yield %>
   </div>
 </body>

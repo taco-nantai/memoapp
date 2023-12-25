@@ -2,8 +2,7 @@
 
 source 'https://rubygems.org'
 
-gem 'erb_lint', require: false
-gem 'rubocop-fjord', require: false
-
+gem 'erb_lint'
+gem 'rubocop-fjord'
 gem 'sinatra'
 gem 'sinatra-contrib'

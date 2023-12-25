@@ -27,12 +27,28 @@ h2.page_title{
 input.button{
     display: block;
     width: 140px;
-    height: 45px;
+    height: 60px;
     margin:auto;
     border: 1px solid;
     border-radius: 10px;
     background-color: #C0C0C0;
     cursor: pointer;
+}
+
+a.button{
+    display: inline-block;
+    text-align: center;
+    display: block;
+    width: 140px;
+    height: 45px;
+    padding: 20px 0 0 0px;
+    margin:auto;
+    border: 1px solid;
+    border-radius: 10px;
+    color: black;
+    background-color: #C0C0C0;
+    cursor: pointer;
+    text-decoration: none;
 }
 div.button_div{
     display: flex;
