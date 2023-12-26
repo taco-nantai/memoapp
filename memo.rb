@@ -6,6 +6,12 @@ require 'securerandom'
 require 'sinatra'
 require 'sinatra/reloader'
 
+HEADERS = %w[
+  id
+  title
+  text
+].freeze
+
 MEMOS_CSV = 'memos.csv'
 
 helpers do
@@ -24,7 +30,7 @@ def read_memos
 end
 
 def add_memo(memo)
-  CSV.open(MEMOS_CSV, 'a') { |memos| memos << [memo['id'], memo['title'], memo['text']] }
+  CSV.open(MEMOS_CSV, 'a', headers: HEADERS, write_headers: true) { |memos| memos << memo }
 end
 
 def write_memos(edited_memos)
