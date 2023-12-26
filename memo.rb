@@ -1,8 +1,6 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-# myapp.rb
-
 require 'csv'
 require 'securerandom'
 require 'sinatra'
