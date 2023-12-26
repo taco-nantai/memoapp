@@ -1,11 +1,9 @@
 <p><b class="memo_title"><%= h @memo['title'] %></b></p>
 <p><%= h(@memo['text']).gsub(/\R/, "<br>") %></p>
 <div class="button_div">
-  <form method="get" action="/editing/<%= @memo['id'] %>">
-    <input class="button" type="submit" value="編集">
+  <a class="button" type="button" href="/editing/<%= @memo['id'] %>">編集</a>
+  <form method="post" action="/memo/<%= @memo['id'] %>">
+    <input type="hidden" name="_method" value="DELETE">
+    <input class="button" type="submit" value="削除">
   </form>
-<form method="post" action="/memo/<%= @memo['id'] %>">
-  <input type="hidden" name="_method" value="DELETE">
-  <input class="button" type="submit" value="削除">
-</form>
 </div>
