@@ -29,14 +29,9 @@ def read_memos
   CSV.read(MEMOS_CSV, headers: true)
 end
 
-def add_memo(memo)
-  CSV.open(MEMOS_CSV, 'a', headers: HEADERS, write_headers: true) { |memos| memos << memo }
-end
-
 def write_memos(edited_memos)
-  CSV.open(MEMOS_CSV, 'w') do |memos|
-    memos << %w[id title text]
-    edited_memos.each { |edited_memo| memos << [edited_memo['id'], edited_memo['title'], edited_memo['text']] }
+  CSV.open(MEMOS_CSV, 'w', headers: HEADERS, write_headers: true) do |memos|
+    edited_memos.each { |edited_memo| memos << edited_memo.to_hash }
   end
 end
 
@@ -64,9 +59,15 @@ get '/editing/*' do |id|
 end
 
 post '/memo' do
-  memo = { 'id' => SecureRandom.uuid, 'title' => params[:title], 'text' => params[:text] }
-  add_memo(memo)
-  redirect "/memo/#{memo['id']}"
+  id = SecureRandom.uuid
+  row = CSV::Row.new([], [])
+  row << { 'id' => id }
+  row << { 'title' => params[:title] }
+  row << { 'text' => params[:text] }
+  edited_memos = read_memos
+  edited_memos << row
+  write_memos(edited_memos)
+  redirect "/memo/#{id}"
 end
 
 patch '/memo/*' do |id|
