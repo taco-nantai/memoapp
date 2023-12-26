@@ -1,30 +1,30 @@
-body{
+body {
     width: 600px;
     margin: auto;
     background-color: #E0E0E0;
 }
-a.top{
+.top {
     margin: 15px;
     color: #008877;
     text-decoration: none;
 }
-div.main{
+.main {
     width: 540px;
     padding: 20px;
     margin: auto;
     border-radius: 20px;
     background-color: #F0F0F0;
 }
-h1{
+h1 {
     margin:10px;
 }
-h2{
+h2 {
     margin: 0;
 }
-h2.page_title{
+.page_title {
     text-align: center;
 }
-input.button{
+.button {
     display: block;
     width: 140px;
     height: 60px;
@@ -35,7 +35,7 @@ input.button{
     cursor: pointer;
 }
 
-a.button{
+.button {
     display: inline-block;
     text-align: center;
     display: block;
@@ -50,19 +50,19 @@ a.button{
     cursor: pointer;
     text-decoration: none;
 }
-div.button_div{
+.button_div {
     display: flex;
     justify-content:space-around
 }
-#title{
-    width: 534px;
+#title {
+    width: 522px;
     padding: 8px;
     border: 1px solid;
     border-radius: 5px;
     
 }
-#text{
-    width: 534px;
+#text {
+    width: 522px;
     height: 300px;
     padding: 8px;
     border: 1px solid;
