@@ -21,8 +21,7 @@ helpers do
 end
 
 def get_memo(id)
-  read_memos.each { |memo| return memo if memo['id'] == id }
-  nil
+  read_memos.find { |memo| memo['id'] == id }
 end
 
 def read_memos
