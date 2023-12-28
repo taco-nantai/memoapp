@@ -66,7 +66,9 @@ post '/memo' do
 end
 
 patch '/memo/*' do |id|
-  edited_memos = read_memos.map { |memo| memo['id'] == id ? { 'id' => id, 'title' => params[:title], 'text' => params[:text] } : memo }
+  edited_memos = read_memos.map do |memo|
+    memo['id'] == id ? { 'id' => id, 'title' => params[:title], 'text' => params[:text] } : memo
+  end
   write_memos(edited_memos)
   redirect "/memo/#{id}"
 end
