@@ -25,12 +25,12 @@ def get_memo(id)
 end
 
 def read_memos
-  CSV.read(MEMOS_CSV, headers: true)
+  CSV.read(MEMOS_CSV, headers: true).map(&:to_hash)
 end
 
 def write_memos(edited_memos)
   CSV.open(MEMOS_CSV, 'w', headers: HEADERS, write_headers: true) do |memos|
-    edited_memos.each { |edited_memo| memos << edited_memo.to_hash }
+    edited_memos.each { |edited_memo| memos << edited_memo }
   end
 end
 
@@ -59,12 +59,8 @@ end
 
 post '/memo' do
   id = SecureRandom.uuid
-  row = CSV::Row.new([], [])
-  row << { 'id' => id }
-  row << { 'title' => params[:title] }
-  row << { 'text' => params[:text] }
   edited_memos = read_memos
-  edited_memos << row
+  edited_memos << { 'id' => id, 'title' => params[:title], 'text' => params[:text] }
   write_memos(edited_memos)
   redirect "/memo/#{id}"
 end
