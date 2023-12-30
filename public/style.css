@@ -43,13 +43,13 @@ h2 {
     cursor: pointer;
     text-decoration: none;
 }
-.title {
+.single_line_text {
     width: 522px;
     padding: 8px;
     border: 1px solid;
     border-radius: 5px;
 }
-.text {
+.multi_line_text {
     width: 522px;
     height: 300px;
     padding: 8px;
