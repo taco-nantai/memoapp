@@ -12,7 +12,7 @@ HEADERS = %w[
   text
 ].freeze
 
-MEMOS_CSV = 'memos.csv'
+CSV_PATH = 'memos.csv'
 
 helpers do
   def h(text)
@@ -25,11 +25,11 @@ def get_memo(id)
 end
 
 def read_memos
-  CSV.read(MEMOS_CSV, headers: true).map(&:to_hash)
+  CSV.read(CSV_PATH, headers: true).map(&:to_hash)
 end
 
 def write_memos(edited_memos)
-  CSV.open(MEMOS_CSV, 'w', headers: HEADERS, write_headers: true) do |memos|
+  CSV.open(CSV_PATH, 'w', headers: HEADERS, write_headers: true) do |memos|
     edited_memos.each { |edited_memo| memos << edited_memo }
   end
 end
