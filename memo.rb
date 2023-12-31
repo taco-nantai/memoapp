@@ -8,6 +8,13 @@ require 'sinatra'
 require 'sinatra/reloader'
 
 DB_NAME = 'memoapp'
+QUERIES = {
+  select_one: 'SELECT * FROM memo WHERE id = $1',
+  select: 'SELECT * FROM memo ORDER BY created_at',
+  insert: 'INSERT INTO memo (id, title, text) VALUES ($1, $2, $3)',
+  update: 'UPDATE memo SET title = $1, text = $2 WHERE id = $3',
+  delete: 'DELETE FROM memo WHERE id = $1'
+}.freeze
 
 helpers do
   def h(text)
@@ -16,13 +23,14 @@ helpers do
 end
 
 def manipulate_db(manipulation, memo = nil)
-  connect = PG.connect(dbname: DB_NAME)
+  conn = PG.connect(dbname: DB_NAME)
+  query = QUERIES[manipulation]
   case manipulation
-  when :select_one then connect.exec("SELECT * FROM memo WHERE id = '#{memo[:id]}'").first
-  when :select then connect.exec('SELECT * FROM memo ORDER BY created_at')
-  when :insert then connect.exec("INSERT INTO memo VALUES ('#{memo[:id]}', '#{memo[:title]}', '#{memo[:text]}')")
-  when :update then connect.exec("UPDATE memo SET title = '#{memo[:title]}', text = '#{memo[:text]}' WHERE id = '#{memo[:id]}'")
-  when :delete then connect.exec("DELETE FROM memo WHERE id = '#{memo[:id]}'")
+  when :select_one then conn.exec_params(query, [memo[:id]]).first
+  when :select then conn.exec_params(query)
+  when :insert then conn.exec_params(query, [memo[:id], memo[:title], memo[:text]])
+  when :update then conn.exec_params(query, [memo[:title], memo[:text], memo[:id]])
+  when :delete then conn.exec_params(query, [memo[:id]])
   end
 end
 
