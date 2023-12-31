@@ -19,7 +19,7 @@ def manipulate_db(manipulation, memo = nil)
   connect = PG.connect(dbname: DB_NAME)
   case manipulation
   when :select_one then connect.exec("SELECT * FROM memo WHERE id = '#{memo[:id]}'").first
-  when :select then connect.exec('SELECT * FROM memo')
+  when :select then connect.exec('SELECT * FROM memo ORDER BY created_at')
   when :insert then connect.exec("INSERT INTO memo VALUES ('#{memo[:id]}', '#{memo[:title]}', '#{memo[:text]}')")
   when :update then connect.exec("UPDATE memo SET title = '#{memo[:title]}', text = '#{memo[:text]}' WHERE id = '#{memo[:id]}'")
   when :delete then connect.exec("DELETE FROM memo WHERE id = '#{memo[:id]}'")

@@ -4,4 +4,5 @@ CREATE TABLE memo
 (id text not null,
 title text,
 "text" text,
+created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 PRIMARY KEY(id));
