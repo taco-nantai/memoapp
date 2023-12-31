@@ -15,45 +15,26 @@ helpers do
   end
 end
 
-def connect_db
-  PG.connect(dbname: DB_NAME)
-end
-
-def get_memo(id)
-  connect = connect_db
-  result = connect.exec("SELECT * FROM memo WHERE id = '#{id}'")
-  result.first
-end
-
-def read_memos
-  connect = connect_db
-  connect.exec('SELECT * FROM memo')
-end
-
-def insert_memo(memo)
-  connect = connect_db
-  connect.exec("INSERT INTO memo VALUES ('#{memo[:id]}', '#{memo[:title]}', '#{memo[:text]}')")
-end
-
-def update_memo(memo)
-  connect = connect_db
-  connect.exec("UPDATE memo SET title = '#{memo[:title]}', text = '#{memo[:text]}' WHERE id = '#{memo[:id]}'")
-end
-
-def delete_memo(id)
-  connect = connect_db
-  connect.exec("DELETE FROM memo WHERE id = '#{id}'")
+def manipulate_db(manipulation, memo = nil)
+  connect = PG.connect(dbname: DB_NAME)
+  case manipulation
+  when :select_one then connect.exec("SELECT * FROM memo WHERE id = '#{memo[:id]}'").first
+  when :select then connect.exec('SELECT * FROM memo')
+  when :insert then connect.exec("INSERT INTO memo VALUES ('#{memo[:id]}', '#{memo[:title]}', '#{memo[:text]}')")
+  when :update then connect.exec("UPDATE memo SET title = '#{memo[:title]}', text = '#{memo[:text]}' WHERE id = '#{memo[:id]}'")
+  when :delete then connect.exec("DELETE FROM memo WHERE id = '#{memo[:id]}'")
+  end
 end
 
 get '/' do
   @title = 'メモ一覧'
-  @memos = read_memos
+  @memos = manipulate_db(:select)
   erb :index
 end
 
 get '/memo/*' do |id|
   @title = 'メモ'
-  @memo = get_memo(id)
+  @memo = manipulate_db(:select_one, { id: })
   erb @memo ? :memo : :notFound
 end
 
@@ -64,23 +45,23 @@ end
 
 get '/editing/*' do |id|
   @title = '編集'
-  @memo = get_memo(id)
+  @memo = manipulate_db(:select_one, { id: })
   erb @memo ? :editing : :notFound
 end
 
 post '/memo' do
   id = SecureRandom.uuid
-  insert_memo({ id:, title: params[:title], text: params[:text] })
+  manipulate_db(:insert, { id:, title: params[:title], text: params[:text] })
   redirect "/memo/#{id}"
 end
 
 patch '/memo/*' do |id|
-  update_memo({ id:, title: params[:title], text: params[:text] })
+  manipulate_db(:update, { id:, title: params[:title], text: params[:text] })
   redirect "/memo/#{id}"
 end
 
 delete '/memo/*' do |id|
-  delete_memo(id)
+  manipulate_db(:delete, { id: })
   redirect '/'
 end
 
