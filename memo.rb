@@ -2,17 +2,12 @@
 # frozen_string_literal: true
 
 require 'csv'
+require 'pg'
 require 'securerandom'
 require 'sinatra'
 require 'sinatra/reloader'
 
-HEADERS = %w[
-  id
-  title
-  text
-].freeze
-
-CSV_PATH = 'memos.csv'
+DB_NAME = 'memoapp'
 
 helpers do
   def h(text)
@@ -20,18 +15,34 @@ helpers do
   end
 end
 
+def connect_db
+  PG.connect(dbname: DB_NAME)
+end
+
 def get_memo(id)
-  read_memos.find { |memo| memo['id'] == id }
+  connect = connect_db
+  result = connect.exec("SELECT * FROM memo WHERE id = '#{id}'")
+  result.first
 end
 
 def read_memos
-  CSV.read(CSV_PATH, headers: true).map(&:to_hash)
+  connect = connect_db
+  connect.exec('SELECT * FROM memo')
 end
 
-def write_memos(edited_memos)
-  CSV.open(CSV_PATH, 'w', headers: HEADERS, write_headers: true) do |memos|
-    edited_memos.each { |edited_memo| memos << edited_memo }
-  end
+def insert_memo(memo)
+  connect = connect_db
+  connect.exec("INSERT INTO memo VALUES ('#{memo[:id]}', '#{memo[:title]}', '#{memo[:text]}')")
+end
+
+def update_memo(memo)
+  connect = connect_db
+  connect.exec("UPDATE memo SET title = '#{memo[:title]}', text = '#{memo[:text]}' WHERE id = '#{memo[:id]}'")
+end
+
+def delete_memo(id)
+  connect = connect_db
+  connect.exec("DELETE FROM memo WHERE id = '#{id}'")
 end
 
 get '/' do
@@ -59,23 +70,17 @@ end
 
 post '/memo' do
   id = SecureRandom.uuid
-  edited_memos = read_memos
-  edited_memos << { 'id' => id, 'title' => params[:title], 'text' => params[:text] }
-  write_memos(edited_memos)
+  insert_memo({ id:, title: params[:title], text: params[:text] })
   redirect "/memo/#{id}"
 end
 
 patch '/memo/*' do |id|
-  edited_memos = read_memos.map do |memo|
-    memo['id'] == id ? { 'id' => id, 'title' => params[:title], 'text' => params[:text] } : memo
-  end
-  write_memos(edited_memos)
+  update_memo({ id:, title: params[:title], text: params[:text] })
   redirect "/memo/#{id}"
 end
 
 delete '/memo/*' do |id|
-  edited_memos = read_memos.reject { |memo| memo['id'] == id }
-  write_memos(edited_memos)
+  delete_memo(id)
   redirect '/'
 end
 
