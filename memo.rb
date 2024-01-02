@@ -11,7 +11,7 @@ DB_NAME = 'memoapp'
 QUERIES = {
   select_one: 'SELECT * FROM memo WHERE id = $1',
   select_all: 'SELECT * FROM memo ORDER BY created_at',
-  insert: 'INSERT INTO memo (id, title, text) VALUES ($1, $2, $3)',
+  insert: 'INSERT INTO memo (title, text) VALUES ($1, $2) RETURNING id',
   update: 'UPDATE memo SET title = $1, text = $2 WHERE id = $3',
   delete: 'DELETE FROM memo WHERE id = $1'
 }.freeze
@@ -38,7 +38,7 @@ end
 
 def insert_memo(memo)
   conn = connect_db
-  conn.exec_params(QUERIES[:insert], [memo[:id], memo[:title], memo[:text]])
+  conn.exec_params(QUERIES[:insert], [memo[:title], memo[:text]])
 end
 
 def update_memo(memo)
@@ -75,9 +75,8 @@ get '/editing/*' do |id|
 end
 
 post '/memo' do
-  id = SecureRandom.uuid
-  insert_memo({ id:, title: params[:title], text: params[:text] })
-  redirect "/memo/#{id}"
+  returning = insert_memo({ title: params[:title], text: params[:text] })
+  redirect "/memo/#{returning.first['id']}"
 end
 
 patch '/memo/*' do |id|
