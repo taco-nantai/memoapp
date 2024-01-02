@@ -22,27 +22,44 @@ helpers do
   end
 end
 
-def manipulate_db(manipulation, memo = nil)
-  conn = PG.connect(dbname: DB_NAME)
-  query = QUERIES[manipulation]
-  case manipulation
-  when :select_one then conn.exec_params(query, [memo[:id]]).first
-  when :select_all then conn.exec_params(query)
-  when :insert then conn.exec_params(query, [memo[:id], memo[:title], memo[:text]])
-  when :update then conn.exec_params(query, [memo[:title], memo[:text], memo[:id]])
-  when :delete then conn.exec_params(query, [memo[:id]])
-  end
+def connect_db
+  PG.connect(dbname: DB_NAME)
+end
+
+def select_one(id)
+  conn = connect_db
+  conn.exec_params(QUERIES[:select_one], [id]).first
+end
+
+def select_all
+  conn = connect_db
+  conn.exec_params(QUERIES[:select_all])
+end
+
+def insert_memo(memo)
+  conn = connect_db
+  conn.exec_params(QUERIES[:insert], [memo[:id], memo[:title], memo[:text]])
+end
+
+def update_memo(memo)
+  conn = connect_db
+  conn.exec_params(QUERIES[:update], [memo[:title], memo[:text], memo[:id]])
+end
+
+def delete_memo(id)
+  conn = connect_db
+  conn.exec_params(QUERIES[:delete], [id])
 end
 
 get '/' do
   @title = 'メモ一覧'
-  @memos = manipulate_db(:select_all)
+  @memos = select_all
   erb :index
 end
 
 get '/memo/*' do |id|
   @title = 'メモ'
-  @memo = manipulate_db(:select_one, { id: })
+  @memo = select_one(id)
   erb @memo ? :memo : :notFound
 end
 
@@ -53,23 +70,23 @@ end
 
 get '/editing/*' do |id|
   @title = '編集'
-  @memo = manipulate_db(:select_one, { id: })
+  @memo = select_one(id)
   erb @memo ? :editing : :notFound
 end
 
 post '/memo' do
   id = SecureRandom.uuid
-  manipulate_db(:insert, { id:, title: params[:title], text: params[:text] })
+  insert_memo({ id:, title: params[:title], text: params[:text] })
   redirect "/memo/#{id}"
 end
 
 patch '/memo/*' do |id|
-  manipulate_db(:update, { id:, title: params[:title], text: params[:text] })
+  update_memo({ id:, title: params[:title], text: params[:text] })
   redirect "/memo/#{id}"
 end
 
 delete '/memo/*' do |id|
-  manipulate_db(:delete, { id: })
+  delete_memo(id)
   redirect '/'
 end
 
