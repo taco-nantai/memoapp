@@ -1,5 +1,5 @@
 <p><b class="memo_title"><%= h @memo['title'] %></b></p>
-<p><%= h(@memo['text']).gsub(/\R/, "<br>") %></p>
+<p><%= h(@memo['main_text']).gsub(/\R/, "<br>") %></p>
 <div class="flexbox">
   <a class="button" href="/editing/<%= @memo['id'] %>">編集</a>
   <form method="post" action="/memo/<%= @memo['id'] %>">

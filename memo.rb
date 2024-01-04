@@ -31,12 +31,12 @@ end
 
 def insert_memo(memo)
   conn = connect_db
-  conn.exec_params('INSERT INTO memo (title, text) VALUES ($1, $2) RETURNING id', memo.values_at(:title, :text))
+  conn.exec_params('INSERT INTO memo (title, main_text) VALUES ($1, $2) RETURNING id', memo.values_at(:title, :main_text))
 end
 
 def update_memo(memo)
   conn = connect_db
-  conn.exec_params('UPDATE memo SET title = $1, text = $2 WHERE id = $3', memo.values_at(:title, :text, :id))
+  conn.exec_params('UPDATE memo SET title = $1, main_text = $2 WHERE id = $3', memo.values_at(:title, :main_text, :id))
 end
 
 def delete_memo(id)
@@ -68,12 +68,12 @@ get '/editing/*' do |id|
 end
 
 post '/memo' do
-  returning = insert_memo(params.slice(:title, :text))
+  returning = insert_memo(params.slice(:title, :main_text))
   redirect "/memo/#{returning.first['id']}"
 end
 
 patch '/memo/*' do |id|
-  update_memo({ id: }.merge(params.slice(:title, :text)))
+  update_memo(params.slice(:title, :main_text).merge({ id: }))
   redirect "/memo/#{id}"
 end
 
