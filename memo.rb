@@ -8,13 +8,6 @@ require 'sinatra'
 require 'sinatra/reloader'
 
 DB_NAME = 'memoapp'
-QUERIES = {
-  select_one: 'SELECT * FROM memo WHERE id = $1',
-  select_all: 'SELECT * FROM memo ORDER BY created_at',
-  insert: 'INSERT INTO memo (title, text) VALUES ($1, $2) RETURNING id',
-  update: 'UPDATE memo SET title = $1, text = $2 WHERE id = $3',
-  delete: 'DELETE FROM memo WHERE id = $1'
-}.freeze
 
 helpers do
   def h(text)
@@ -28,27 +21,27 @@ end
 
 def select_one(id)
   conn = connect_db
-  conn.exec_params(QUERIES[:select_one], [id]).first
+  conn.exec_params('SELECT * FROM memo WHERE id = $1', [id]).first
 end
 
 def select_all
   conn = connect_db
-  conn.exec_params(QUERIES[:select_all])
+  conn.exec_params('SELECT * FROM memo ORDER BY created_at')
 end
 
 def insert_memo(memo)
   conn = connect_db
-  conn.exec_params(QUERIES[:insert], [memo[:title], memo[:text]])
+  conn.exec_params('INSERT INTO memo (title, text) VALUES ($1, $2) RETURNING id', [memo[:title], memo[:text]])
 end
 
 def update_memo(memo)
   conn = connect_db
-  conn.exec_params(QUERIES[:update], [memo[:title], memo[:text], memo[:id]])
+  conn.exec_params('UPDATE memo SET title = $1, text = $2 WHERE id = $3', [memo[:title], memo[:text], memo[:id]])
 end
 
 def delete_memo(id)
   conn = connect_db
-  conn.exec_params(QUERIES[:delete], [id])
+  conn.exec_params('DELETE FROM memo WHERE id = $1', [id])
 end
 
 get '/' do
