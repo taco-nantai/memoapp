@@ -68,12 +68,12 @@ get '/editing/*' do |id|
 end
 
 post '/memo' do
-  returning = insert_memo({ title: params[:title], text: params[:text] })
+  returning = insert_memo(params.slice(:title, :text))
   redirect "/memo/#{returning.first['id']}"
 end
 
 patch '/memo/*' do |id|
-  update_memo({ id:, title: params[:title], text: params[:text] })
+  update_memo({ id: }.merge(params.slice(:title, :text)))
   redirect "/memo/#{id}"
 end
 
